@@ -1,0 +1,617 @@
+/* 動畫以 CSS 為主；prefers-reduced-motion 時大幅減少 */
+
+/* 1. 貓咪入場：彈跳滑入 */
+.order-card {
+  animation: cat-enter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes cat-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-28px) scale(0.7);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 2. 貓咪待機：依心情呼吸 / 開心彈跳 / 生氣發抖（整張插畫以腳底為支點） */
+.cat-art img {
+  transform-origin: 50% 100%;
+  animation: cat-breathe 2.6s ease-in-out infinite;
+}
+
+.cat-art.mood-happy img {
+  animation: cat-hop 1.1s ease-in-out infinite;
+}
+
+.cat-art.mood-impatient img {
+  animation-duration: 1.2s;
+}
+
+.cat-art.mood-angry img {
+  animation: cat-rage 0.28s linear infinite;
+}
+
+@keyframes cat-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.015, 0.975);
+  }
+}
+
+@keyframes cat-hop {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  20% {
+    transform: translateY(0) scale(1.04, 0.95);
+  }
+  50% {
+    transform: translateY(-5%) scale(0.98, 1.03);
+  }
+  80% {
+    transform: translateY(0) scale(1.02, 0.98);
+  }
+}
+
+@keyframes cat-rage {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  25% {
+    transform: translateX(-1.5%) rotate(-1.5deg);
+  }
+  75% {
+    transform: translateX(1.5%) rotate(1.5deg);
+  }
+}
+
+/* 3. 不耐煩：皺眉抖動 */
+.order-card.mood-impatient .order-cat {
+  animation: fidget 0.5s ease-in-out infinite;
+}
+
+@keyframes fidget {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(2px) rotate(2deg);
+  }
+}
+
+/* 耐心危險：耐心條閃爍 */
+.order-card.is-danger .patience {
+  animation: danger-blink 0.6s steps(2, jump-none) infinite;
+}
+
+@keyframes danger-blink {
+  from {
+    border-color: var(--line);
+    box-shadow: none;
+  }
+  to {
+    border-color: var(--red);
+    box-shadow: 0 0 0 2px rgba(217, 112, 106, 0.45);
+  }
+}
+
+/* 4. 食材按壓（global.css :active）＋ 點錯抖動 */
+.ingredient-btn.is-wrong {
+  animation: wrong-shake 0.4s ease;
+}
+
+@keyframes wrong-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+    background: #ffd9d4;
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+/* 5. 正確製作：星星 */
+.spark-burst .sparkle {
+  animation: spark-fly 0.6s ease-out both;
+}
+
+@keyframes spark-fly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(1.1) rotate(90deg);
+  }
+}
+
+.step-chip.is-done {
+  animation: chip-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes chip-pop {
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.station-dish.is-ready {
+  animation: dish-ready 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dish-ready {
+  0% {
+    transform: scale(0.4) rotate(-15deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.serve-btn.is-ready {
+  animation: serve-glow 1s ease-in-out infinite;
+}
+
+@keyframes serve-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
+}
+
+.station-message {
+  animation: msg-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.station-message.msg-bad {
+  animation: msg-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), wrong-shake 0.4s 0.1s ease;
+}
+
+@keyframes msg-pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 6. 加分浮動文字 */
+.floater {
+  animation: float-up 1.1s ease-out both;
+  animation-delay: calc(var(--i, 0) * 0.15s);
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -54px) scale(1);
+  }
+}
+
+/* 7. Combo / 分數 放大 */
+.hud-score .hud-value,
+.hud-combo .hud-value {
+  animation: value-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hud-combo.is-hot .hud-value {
+  animation: combo-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes value-pop {
+  0% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes combo-pop {
+  0% {
+    transform: scale(1.9) rotate(-8deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.hud-time.is-low .hud-value {
+  animation: value-pop 0.4s ease;
+}
+
+/* 8. 離開：出餐開心跳走 / 生氣淡出 */
+.order-card.leave-served {
+  animation: leave-happy 0.7s ease-in both;
+}
+
+.order-card.leave-angry {
+  animation: leave-angry 0.7s ease-in both;
+}
+
+@keyframes leave-happy {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  35% {
+    transform: translateY(-14px) scale(1.04);
+  }
+  100% {
+    transform: translateY(-40px) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes leave-angry {
+  0%,
+  30% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  10% {
+    transform: translateX(-5px);
+  }
+  20% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(30px) scale(0.85);
+    opacity: 0;
+    filter: grayscale(0.6);
+  }
+}
+
+.speech {
+  animation: speech-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes speech-pop {
+  from {
+    opacity: 0;
+    scale: 0.5;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.changed-stamp {
+  animation: stamp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes stamp {
+  from {
+    transform: rotate(10deg) scale(2.4);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(10deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.order-card.is-changed .order-ticket {
+  animation: wrong-shake 0.45s ease;
+}
+
+/* 9. 特殊事件提示 */
+.event-banner {
+  animation: banner-in 2.6s ease both;
+}
+
+@keyframes banner-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30px) scale(0.6);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.08);
+  }
+  18% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.95);
+  }
+}
+
+.event-chip {
+  animation: chip-in 0.35s ease both;
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chip-lucky .lucky-cat,
+.banner-lucky .lucky-cat {
+  animation: lucky-bounce 0.6s ease-in-out infinite alternate;
+}
+
+.lucky-paw {
+  transform-box: fill-box;
+  transform-origin: 20% 90%;
+  animation: lucky-wave 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes lucky-wave {
+  from {
+    transform: rotate(-12deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes lucky-bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+.spill-overlay {
+  animation: chip-in 0.25s ease both;
+}
+
+.clean-btn {
+  animation: value-pop 0.25s ease;
+}
+
+/* 開局倒數 */
+.ready-count {
+  animation: ready-pop 1s ease both;
+}
+
+@keyframes ready-pop {
+  0% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.2;
+  }
+}
+
+.closing-sign {
+  animation: closing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes closing {
+  from {
+    transform: translateY(-80px) rotate(-12deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-3deg);
+    opacity: 1;
+  }
+}
+
+.pause-card {
+  animation: chip-in 0.3s ease both;
+}
+
+/* 10. 結算畫面進場 */
+.result-hero,
+.result-card,
+.result-actions {
+  animation: result-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.result-card {
+  animation-delay: 0.15s;
+}
+
+.result-actions {
+  animation-delay: 0.35s;
+}
+
+.result-title strong {
+  animation: stamp-title 0.5s 1.1s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.new-record {
+  animation: stamp-title 0.5s 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) both, record-glow 1.2s 1.7s ease-in-out infinite;
+}
+
+@keyframes result-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes stamp-title {
+  from {
+    opacity: 0;
+    transform: scale(2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes record-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 112, 106, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(217, 112, 106, 0);
+  }
+}
+
+.result-confetti .sparkle {
+  animation: confetti 3.2s linear infinite;
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(360deg);
+    opacity: 0.6;
+  }
+}
+
+/* 開始畫面 */
+.start-logo {
+  animation: result-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.logo-mark {
+  animation: head-bob 2s ease-in-out infinite;
+}
+
+.start-cats .cat-art:nth-child(odd) {
+  animation: peek 2.4s ease-in-out infinite;
+}
+
+.start-cats .cat-art:nth-child(even) {
+  animation: peek 2.4s 1.2s ease-in-out infinite;
+}
+
+@keyframes peek {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.btn-start {
+  animation: start-breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes start-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.btn-start:active {
+  animation: none;
+}
+
+/* 暫停時凍結所有動畫，與遊戲時間同步 */
+.game-screen.is-paused *:not(.overlay):not(.overlay *) {
+  animation-play-state: paused !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 減少動態效果                                                        */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* 保留必要的提示，但改為靜態顯示 */
+  .floater {
+    animation: none !important;
+    transform: translate(-50%, -20px);
+    opacity: 1;
+  }
+
+  .event-banner {
+    animation: none !important;
+    transform: translate(-50%, 0);
+  }
+
+  .result-confetti {
+    display: none;
+  }
+}
