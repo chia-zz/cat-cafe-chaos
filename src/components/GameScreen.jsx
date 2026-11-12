@@ -3,6 +3,7 @@ import GameHud from './GameHud.jsx';
 import OrderBoard from './OrderBoard.jsx';
 import CookingStation from './CookingStation.jsx';
 import CatCharacter from './CatCharacter.jsx';
+import PlayerBadge from './PlayerBadge.jsx';
 import { EventBanner, EventBar } from './EventNotification.jsx';
 import { UiIcon } from './art/SceneArt.jsx';
 import { useGameEngine } from '../hooks/useGameEngine.js';
@@ -133,6 +134,7 @@ export default function GameScreen({ audio, soundOn, onToggleSound, onFinish, on
       {state.status === 'paused' && (
         <div className="overlay overlay-pause" role="dialog" aria-modal="true" aria-label="遊戲暫停">
           <div className="pause-card">
+            <PlayerBadge className="pause-player" />
             <CatCharacter catId="white" mood="happy" className="pause-cat" />
             <h2>休息一下喵～</h2>
             <p>遊戲已暫停，準備好再繼續營業吧！</p>

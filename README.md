@@ -106,21 +106,25 @@ tests/
 
 `vite.config.js` 使用 `base: './'`，建置結果可放在任何子路徑。
 
-**方法 A：GitHub Actions（已附設定）**
+**CI（自動檢查）**：每次 push 或開 PR，`.github/workflows/ci.yml` 會自動跑測試與建置，只檢查、不部署。
 
-1. 將專案推到 GitHub 的 `main` 分支。
-2. 到 repo 的 **Settings → Pages → Build and deployment → Source** 選擇 **GitHub Actions**。
-3. 之後每次 push 到 `main`，`.github/workflows/deploy.yml` 會自動測試、建置並部署。網址為 `https://<帳號>.github.io/<repo>/`。
-
-**方法 B：手動**
+**發布（手動）**：網站更新時機由自己決定，用 gh-pages 分支發布。
 
 ```bash
-npm run build
-# 將 dist/ 內容推到 gh-pages 分支，例如：
-npx gh-pages -d dist
+npm run deploy
 ```
 
-然後在 Settings → Pages 選擇 `gh-pages` 分支。
+`predeploy` 會先跑 `npm test` 與 `npm run build`，通過後才把 `dist/` 推到 `gh-pages` 分支。
+
+第一次設定：到 repo 的 **Settings → Pages → Build and deployment → Source** 選 **Deploy from a branch**，分支選 `gh-pages`、資料夾選 `/ (root)`。網址為 `https://chia-zz.github.io/cat-cafe-chaos/`。
+
+## 平台串接預留
+
+- **Android 套件名稱**：`com.testzzz.catcafechaos`（之後用 Capacitor 打包時使用；上傳過一次就不能再改）。
+- **玩家顯示區**：開始畫面右上角、暫停視窗會顯示目前玩家，預設為「訪客」。所有畫面都從 `src/utils/player.js` 讀取。
+  - 測試：網址加上 `?player=名字`，例如 `http://localhost:5173/?player=Tester`。
+  - 串接平台：SDK 取得身分後呼叫 `setPlayer({ name })`，畫面會自動更新。
+- 畫面切換只用 React state，不使用 `history.pushState`；目前也沒有設定 CSP，之後若要加，`connect-src` 需允許平台 API 網域。
 
 ## 美術說明
 

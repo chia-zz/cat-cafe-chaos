@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import cafeBg from '../../assets/cafe-bg.webp';
 import logoImg from '../../assets/logo.webp';
+import luckyImg from '../../assets/lucky-cat.webp';
 
 const L = '#5C4033';
 const s = { stroke: L, strokeWidth: 2.4, strokeLinejoin: 'round', strokeLinecap: 'round' };
@@ -10,29 +11,9 @@ export const CafeBackdrop = memo(function CafeBackdrop() {
   return <img className="cafe-backdrop" src={cafeBg} alt="" aria-hidden="true" draggable="false" />;
 });
 
-/** 招財貓 */
+/** 招財貓（手繪插畫，來源 src/art-source/lucky-cat.png） */
 export const LuckyCatArt = memo(function LuckyCatArt({ className = '' }) {
-  return (
-    <svg className={`lucky-cat ${className}`} viewBox="0 0 64 64" aria-hidden="true">
-      <g {...s} strokeWidth="2.2">
-        <ellipse cx="32" cy="50" rx="17" ry="12" fill="#FFFDF8" />
-        <g className="lucky-paw">
-          <path d="M46 34 q8 -4 8 -16 q-1 -6 -6 -4 q-4 2 -6 14" fill="#FFFDF8" />
-          <path d="M48 16 q2 -3 5 -1" fill="none" strokeWidth="1.6" />
-        </g>
-        <path d="M14 22 L16 6 L27 13 Z M50 22 L48 6 L37 13 Z" fill="#FFFDF8" />
-        <path d="M17 17 L18 10 L23 14 Z M47 17 L46 10 L41 14 Z" fill="#F3B5B5" stroke="none" />
-        <ellipse cx="32" cy="27" rx="19" ry="15" fill="#FFFDF8" />
-        <ellipse cx="22" cy="18" rx="6" ry="5" fill="#E9A15F" stroke="none" />
-        <path d="M22 28 q3 -4 6 0 M36 28 q3 -4 6 0" fill="none" strokeWidth="2" />
-        <path d="M29 33 q3 3 6 0" fill="none" strokeWidth="1.8" />
-        <path d="M18 40 q14 6 28 0" fill="none" stroke="#D9706A" strokeWidth="3.4" />
-        <circle cx="32" cy="44" r="3.6" fill="#F6C94E" strokeWidth="1.8" />
-        <ellipse cx="22" cy="54" rx="8" ry="6.5" fill="#F6C94E" />
-        <ellipse cx="22" cy="54" rx="4.4" ry="3.4" fill="none" stroke="#C99A3B" strokeWidth="1.6" />
-      </g>
-    </svg>
-  );
+  return <img className={`lucky-cat ${className}`} src={luckyImg} alt="" aria-hidden="true" draggable="false" />;
 });
 
 /** 打翻的牛奶 */

@@ -1,0 +1,28 @@
+name: CI
+
+# 只做檢查：每次 push / PR 自動跑測試與建置，不部署。
+# 網站發布改用 `npm run deploy`（gh-pages 分支）手動執行。
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build

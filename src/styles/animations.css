@@ -389,21 +389,6 @@
   animation: lucky-bounce 0.6s ease-in-out infinite alternate;
 }
 
-.lucky-paw {
-  transform-box: fill-box;
-  transform-origin: 20% 90%;
-  animation: lucky-wave 0.5s ease-in-out infinite alternate;
-}
-
-@keyframes lucky-wave {
-  from {
-    transform: rotate(-12deg);
-  }
-  to {
-    transform: rotate(10deg);
-  }
-}
-
 @keyframes lucky-bounce {
   from {
     transform: translateY(0);

@@ -4,6 +4,7 @@
 - 貓咪：16 張使用同一個裁切框，確保換表情時貓咪位置完全不動
 - 背景：裁掉外框與透明邊
 - Logo：輸出 WebP 與 favicon PNG
+- 招財貓：裁成正方形小圖
 """
 from pathlib import Path
 from PIL import Image
@@ -44,6 +45,13 @@ side = max(logo.size)
 square = Image.new('RGBA', (side, side))
 square.alpha_composite(logo, ((side - logo.width) // 2, (side - logo.height) // 2))
 save_webp(square.resize((256, 256), Image.LANCZOS), OUT / 'logo.webp')
+lucky = Image.open(SRC / 'lucky-cat.png').convert('RGBA')
+lucky = lucky.crop(lucky.getchannel('A').point(lambda v: 255 if v > 40 else 0).getbbox())
+side = round(max(lucky.size) * 1.04)
+sq = Image.new('RGBA', (side, side))
+sq.alpha_composite(lucky, ((side - lucky.width) // 2, (side - lucky.height) // 2))
+save_webp(sq.resize((192, 192), Image.LANCZOS), OUT / 'lucky-cat.webp')
+
 fav = ROOT / 'public' / 'favicon.png'
 square.resize((64, 64), Image.LANCZOS).save(fav, optimize=True)
 print(f'{fav.relative_to(ROOT)}  {fav.stat().st_size // 1024} KB')

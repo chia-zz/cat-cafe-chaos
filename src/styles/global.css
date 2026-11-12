@@ -171,7 +171,7 @@ svg {
 .sound-toggle {
   position: absolute;
   top: calc(var(--safe-top) + 10px);
-  right: calc(var(--safe-right) + 10px);
+  left: calc(var(--safe-left) + 10px);
   z-index: 3;
   display: flex;
   align-items: center;
@@ -196,6 +196,52 @@ svg {
   background: var(--yellow);
 }
 
+/* 玩家顯示區：確認平台帶入的身分 */
+.player-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 11em;
+  min-height: 36px;
+  padding: 4px 12px 4px 8px;
+  border: 2.5px solid var(--line);
+  border-radius: 999px;
+  background: var(--sage);
+  box-shadow: var(--shadow);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.player-badge.is-guest {
+  background: var(--paper);
+  color: var(--brown);
+}
+
+.player-badge .ui-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.player-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.start-player {
+  position: absolute;
+  top: calc(var(--safe-top) + 14px);
+  right: calc(var(--safe-right) + 10px);
+  z-index: 3;
+}
+
+.pause-player {
+  align-self: flex-end;
+  box-shadow: none;
+}
+
 .start-logo {
   display: flex;
   flex-direction: column;
@@ -217,6 +263,7 @@ svg {
 
 .cat-art img,
 .cafe-backdrop,
+.lucky-cat,
 .logo-mark {
   display: block;
   user-select: none;
@@ -332,7 +379,8 @@ svg {
   color: var(--caramel-dark);
 }
 
-.how-icon svg {
+.how-icon svg,
+.how-icon .lucky-cat {
   width: 26px;
   height: 26px;
 }
@@ -858,7 +906,8 @@ svg {
   overflow: hidden;
 }
 
-.event-chip > svg {
+.event-chip > svg,
+.event-chip > .lucky-cat {
   width: 26px;
   height: 26px;
   flex-shrink: 0;

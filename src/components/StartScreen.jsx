@@ -1,5 +1,6 @@
 import CatCharacter from './CatCharacter.jsx';
 import IngredientIcon from './art/IngredientIcon.jsx';
+import PlayerBadge from './PlayerBadge.jsx';
 import { CafeBackdrop, LogoMark, LuckyCatArt, UiIcon } from './art/SceneArt.jsx';
 
 export default function StartScreen({ highScore, soundOn, onToggleSound, onStart }) {
@@ -15,6 +16,8 @@ export default function StartScreen({ highScore, soundOn, onToggleSound, onStart
         <UiIcon name={soundOn ? 'sound-on' : 'sound-off'} />
         <span>{soundOn ? '音效開' : '音效關'}</span>
       </button>
+
+      <PlayerBadge className="start-player" />
 
       <div className="start-logo">
         <LogoMark />
