@@ -53,9 +53,9 @@ export function getMood(patience, status = 'waiting', config = GAME_CONFIG) {
 }
 
 export function getTitle(score) {
-  let title = TITLES[0].name;
+  let title = TITLES[0].id;
   for (const t of TITLES) {
-    if (score >= t.min) title = t.name;
+    if (score >= t.min) title = t.id;
   }
   return title;
 }
@@ -149,20 +149,22 @@ function addScore(s, delta) {
   s.score = clampScore(s.score + delta);
 }
 
-function setMessage(s, text, kind = 'info', config = GAME_CONFIG) {
-  s.message = { id: fxId(s), text, kind, until: s.elapsed + config.messageDuration };
+/* 文字一律存 i18n key，由畫面依目前語言轉換（見 src/i18n） */
+function setMessage(s, key, kind = 'info', config = GAME_CONFIG) {
+  s.message = { id: fxId(s), key, kind, until: s.elapsed + config.messageDuration };
 }
 
-function setBanner(s, kind, title, text, config = GAME_CONFIG, duration = config.bannerDuration) {
-  s.banner = { id: fxId(s), kind, title, text, until: s.elapsed + duration };
+function setBanner(s, kind, key, params, config = GAME_CONFIG, duration = config.bannerDuration) {
+  s.banner = { id: fxId(s), kind, key, params, until: s.elapsed + duration };
 }
 
 function addFloater(s, slot, text, kind, config = GAME_CONFIG) {
   s.floaters.push({ id: fxId(s), slot, text, kind, until: s.elapsed + config.floaterDuration });
 }
 
-function say(s, order, text, config = GAME_CONFIG) {
-  order.speech = { id: fxId(s), text, until: s.elapsed + config.speechDuration };
+/** 貓咪說話：kind 為台詞種類（arrive / special / served / angry / change），roll 決定說哪一句 */
+function say(s, order, kind, rng, config = GAME_CONFIG) {
+  order.speech = { id: fxId(s), catId: order.catId, kind, roll: rng(), until: s.elapsed + config.speechDuration };
 }
 
 function waitingOrders(s) {
@@ -215,8 +217,8 @@ export function createOrder(s, rng, slot, config = GAME_CONFIG) {
     speech: null,
   };
   s.nextOrderId += 1;
-  const useSpecial = cat.lines.special && rng() < (cat.specialChance ?? 0);
-  say(s, order, pickRandom(rng, useSpecial ? cat.lines.special : cat.lines.arrive), config);
+  const useSpecial = cat.specialChance > 0 && rng() < cat.specialChance;
+  say(s, order, useSpecial ? 'special' : 'arrive', rng, config);
   return order;
 }
 
@@ -277,24 +279,24 @@ function applyEvent(s, eventId, rng, config) {
     order.changed = true;
     order.changedAt = s.elapsed;
     order.patience = Math.min(100, order.patience + def.patienceRefund);
-    say(s, order, pickRandom(rng, cat.lines.change), config);
+    say(s, order, 'change', rng, config);
     // 改單是瞬間事件，直接進入冷卻
     s.lastEventEndedAt = s.elapsed;
-    setBanner(s, 'change', def.title, `${cat.name}改點「${recipe.name}」了！`, config);
+    setBanner(s, 'change', 'changeOrder', { catId: cat.id, recipeId: recipe.id }, config);
     s.effects.push({ type: 'event', eventId, orderId: order.id });
     return true;
   }
 
   if (eventId === 'milkSpill') {
     s.event = { type: 'milkSpill', cleaned: 0, required: def.cleanTaps, startedAt: s.elapsed };
-    setBanner(s, 'spill', def.title, def.text, config);
+    setBanner(s, 'spill', 'milkSpill', null, config);
     s.effects.push({ type: 'event', eventId });
     return true;
   }
 
   if (eventId === 'luckyCat') {
     s.event = { type: 'luckyCat', endsAt: s.elapsed + def.duration, startedAt: s.elapsed };
-    setBanner(s, 'lucky', def.title, def.text, config);
+    setBanner(s, 'lucky', 'luckyCat', { sec: def.duration }, config);
     s.effects.push({ type: 'event', eventId });
     return true;
   }
@@ -357,9 +359,9 @@ export function tick(state, dt, rng = Math.random, config = GAME_CONFIG) {
     const phase = config.phases[phaseIndex];
     s.effects.push({ type: 'phase', phaseIndex });
     if (phase.rush) {
-      setBanner(s, 'rush', '尖峰時段！', '客人變多了，貓咪也更沒耐心！', config);
+      setBanner(s, 'rush', 'rush', null, config);
     } else {
-      setBanner(s, 'phase', phase.name, '開始出現三步驟的甜點囉！', config);
+      setBanner(s, 'phase', phase.id, null, config);
     }
   }
 
@@ -375,7 +377,7 @@ export function tick(state, dt, rng = Math.random, config = GAME_CONFIG) {
       s.combo = 0;
       addScore(s, config.scoring.timeout);
       addFloater(s, order.slot, `${config.scoring.timeout}`, 'bad', config);
-      say(s, order, pickRandom(rng, CATS[order.catId].lines.angry), config);
+      say(s, order, 'angry', rng, config);
       s.effects.push({ type: 'timeout', orderId: order.id });
     }
   }
@@ -425,19 +427,19 @@ export function addIngredient(state, ingredientId, config = GAME_CONFIG) {
   const s = draft(state);
 
   if (isSpillActive(s)) {
-    setMessage(s, '地上都是牛奶，先擦乾淨！', 'warn', config);
+    setMessage(s, 'spillBlocked', 'warn', config);
     s.effects.push({ type: 'blocked' });
     return s;
   }
   const order = s.orders.find((o) => o.id === s.selectedId && o.status === 'waiting');
   if (!order) {
-    setMessage(s, '先點選一張訂單喔！', 'info', config);
+    setMessage(s, 'noOrder', 'info', config);
     s.effects.push({ type: 'blocked' });
     return s;
   }
   const recipe = RECIPES[order.recipeId];
   if (order.progress >= recipe.steps.length) {
-    setMessage(s, '餐點好了，快按「完成餐點」！', 'info', config);
+    setMessage(s, 'alreadyReady', 'info', config);
     s.effects.push({ type: 'blocked' });
     return s;
   }
@@ -446,14 +448,14 @@ export function addIngredient(state, ingredientId, config = GAME_CONFIG) {
     order.progress += 1;
     const ready = order.progress >= recipe.steps.length;
     s.effects.push({ type: 'correct', ingredientId, orderId: order.id, ready });
-    if (ready) setMessage(s, '完成了！端給客人吧～', 'good', config);
+    if (ready) setMessage(s, 'ready', 'good', config);
     return s;
   }
 
   order.progress = 0;
   s.mistakes += 1;
   addScore(s, config.scoring.wrongIngredient);
-  setMessage(s, '喵？！放錯材料了！', 'bad', config);
+  setMessage(s, 'wrong', 'bad', config);
   s.effects.push({ type: 'wrong', ingredientId, orderId: order.id });
   return s;
 }
@@ -478,7 +480,7 @@ export function serveOrder(state, orderId = state.selectedId, config = GAME_CONF
   order.status = 'served';
   order.leaveAt = s.elapsed + config.leaveDuration;
   order.servedPoints = points;
-  say(s, order, pickRandom(Math.random, CATS[order.catId].lines.served), config);
+  say(s, order, 'served', Math.random, config);
 
   addFloater(s, order.slot, `+${points.base + points.patienceBonus}`, lucky ? 'gold' : 'good', config);
   if (points.comboBonus) {
@@ -498,7 +500,7 @@ export function cleanSpill(state, config = GAME_CONFIG) {
   if (s.event.cleaned >= s.event.required) {
     s.event = null;
     s.lastEventEndedAt = s.elapsed;
-    setMessage(s, '乾淨溜溜！繼續營業～', 'good', config);
+    setMessage(s, 'cleaned', 'good', config);
     s.effects.push({ type: 'cleaned' });
   } else {
     s.effects.push({ type: 'wipe', cleaned: s.event.cleaned });

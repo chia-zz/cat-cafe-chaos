@@ -1,12 +1,14 @@
 import OrderCard from './OrderCard.jsx';
 import { CafeBackdrop, UiIcon } from './art/SceneArt.jsx';
 import { GAME_CONFIG } from '../utils/gameConfig.js';
+import { useI18n } from '../i18n/index.js';
 
 /** 貓咪訂單區：固定三個座位，避免訂單進出時版面跳動 */
 export default function OrderBoard({ orders, selectedId, lucky, elapsed, floaters, onSelect, children }) {
+  const { t } = useI18n();
   const slots = Array.from({ length: GAME_CONFIG.maxOrders }, (_, i) => i);
   return (
-    <section className="order-board" aria-label="貓咪訂單區">
+    <section className="order-board" aria-label={t('orders.boardAria')}>
       <CafeBackdrop />
       <div className="order-slots">
         {slots.map((slot) => {
@@ -26,7 +28,7 @@ export default function OrderBoard({ orders, selectedId, lucky, elapsed, floater
               ) : (
                 <div className="order-empty" aria-hidden="true">
                   <UiIcon name="paw" />
-                  <span>空位</span>
+                  <span>{t('orders.empty')}</span>
                 </div>
               )}
               {slotFloaters.map((f, i) => (

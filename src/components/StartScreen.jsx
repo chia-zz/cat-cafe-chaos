@@ -1,9 +1,26 @@
 import CatCharacter from './CatCharacter.jsx';
 import IngredientIcon from './art/IngredientIcon.jsx';
 import PlayerBadge from './PlayerBadge.jsx';
+import LanguageSwitcher from './LanguageSwitcher.jsx';
 import { CafeBackdrop, LogoMark, LuckyCatArt, UiIcon } from './art/SceneArt.jsx';
+import { GAME_CONFIG } from '../utils/gameConfig.js';
+import { useI18n } from '../i18n/index.js';
+
+/** [前段, 粗體, 後段] → 文字 */
+function Rich({ parts }) {
+  const [before, bold, after] = parts;
+  return (
+    <span>
+      {before}
+      <b>{bold}</b>
+      {after}
+    </span>
+  );
+}
 
 export default function StartScreen({ highScore, soundOn, onToggleSound, onStart }) {
+  const { t } = useI18n();
+  const subtitle = t('start.subtitle');
   return (
     <div className="start-screen">
       <button
@@ -11,10 +28,10 @@ export default function StartScreen({ highScore, soundOn, onToggleSound, onStart
         className="sound-toggle"
         onClick={onToggleSound}
         aria-pressed={soundOn}
-        aria-label={soundOn ? '關閉音效' : '開啟音效'}
+        aria-label={t(soundOn ? 'start.turnSoundOff' : 'start.turnSoundOn')}
       >
         <UiIcon name={soundOn ? 'sound-on' : 'sound-off'} />
-        <span>{soundOn ? '音效開' : '音效關'}</span>
+        <span>{t(soundOn ? 'start.soundOn' : 'start.soundOff')}</span>
       </button>
 
       <PlayerBadge className="start-player" />
@@ -22,10 +39,10 @@ export default function StartScreen({ highScore, soundOn, onToggleSound, onStart
       <div className="start-logo">
         <LogoMark />
         <h1>
-          <span className="logo-line">貓咪咖啡廳</span>
-          <span className="logo-line logo-chaos">大混亂！</span>
+          <span className="logo-line">{t('start.titleLine1')}</span>
+          <span className="logo-line logo-chaos">{t('start.titleLine2')}</span>
         </h1>
-        <p className="logo-en">Cat Café Chaos!</p>
+        {subtitle && <p className="logo-en">{subtitle}</p>}
       </div>
 
       <div className="start-scene" aria-hidden="true">
@@ -43,31 +60,32 @@ export default function StartScreen({ highScore, soundOn, onToggleSound, onStart
           <span className="how-icon">
             <UiIcon name="paw" />
           </span>
-          <span>點選貓咪訂單，<b>依序</b>點擊食材製作餐點</span>
+          <Rich parts={t('start.how1')} />
         </li>
         <li>
           <span className="how-icon">
             <IngredientIcon id="coffee" />
           </span>
-          <span>放錯材料會<b>扣 10 分</b>、進度歸零</span>
+          <Rich parts={t('start.how2', { pts: Math.abs(GAME_CONFIG.scoring.wrongIngredient) })} />
         </li>
         <li>
           <span className="how-icon">
             <LuckyCatArt />
           </span>
-          <span>小心改單、打翻牛奶，把握<b>招財貓</b>加倍時間！</span>
+          <Rich parts={t('start.how3')} />
         </li>
       </ul>
 
       <div className="start-bottom">
         <p className="best-score">
           <UiIcon name="star" />
-          最高分 <strong>{highScore}</strong>
+          {t('start.best')} <strong>{highScore}</strong>
         </p>
         <button type="button" className="btn btn-primary btn-start" onClick={onStart}>
-          開始營業
+          {t('start.start')}
         </button>
-        <p className="start-note">一局 90 秒・手機直式遊玩最佳</p>
+        <p className="start-note">{t('start.note', { sec: GAME_CONFIG.duration })}</p>
+        <LanguageSwitcher />
       </div>
     </div>
   );

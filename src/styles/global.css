@@ -20,7 +20,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
-  --font: 'Zen Maru Gothic', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --font: 'Zen Maru Gothic', 'Mali', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', system-ui, sans-serif;
   color-scheme: light;
 }
 
@@ -427,6 +427,49 @@ svg {
   opacity: 0.8;
 }
 
+/* 語言切換 */
+.lang-switch {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 2.5px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.lang-switch button {
+  min-width: 52px;
+  min-height: 36px;
+  padding: 2px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--brown);
+}
+
+.lang-switch button.is-active {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+.pause-lang {
+  align-self: center;
+  margin-top: 4px;
+}
+
+/* 泰文：字距會讓聲調符號錯位，且上下符號需要較高行距 */
+:lang(th) .logo-line,
+:lang(th) .btn-primary {
+  letter-spacing: 0;
+}
+
+:lang(th) .start-logo h1 {
+  line-height: 1.2;
+}
+
 /* ------------------------------------------------------------------ */
 /* 遊戲畫面                                                            */
 /* ------------------------------------------------------------------ */
@@ -640,7 +683,7 @@ svg {
 }
 
 .order-card.is-selected .order-ticket::before {
-  content: '製作中';
+  content: attr(data-making);
   position: absolute;
   top: -12px;
   left: 50%;
@@ -774,7 +817,7 @@ svg {
 }
 
 .order-points::after {
-  content: '分';
+  content: attr(data-unit);
   font-size: 0.62rem;
   margin-left: 1px;
 }
@@ -1228,6 +1271,30 @@ svg {
   font-weight: 900;
   font-size: 0.95rem;
   white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 泰文 / 英文名稱較長：改成圖示在上、文字在下 */
+:lang(th) .ingredient-btn,
+:lang(en) .ingredient-btn {
+  flex-direction: column;
+  gap: 0;
+  padding: 2px 4px;
+}
+
+:lang(th) .ingredient-btn .ingredient-icon,
+:lang(en) .ingredient-btn .ingredient-icon {
+  width: 28px;
+  height: 28px;
+}
+
+:lang(th) .ingredient-name,
+:lang(en) .ingredient-name {
+  max-width: 100%;
+  font-size: 0.82rem;
+  line-height: 1.15;
 }
 
 .spark-burst {

@@ -22,7 +22,6 @@ export const GAME_CONFIG = {
   phases: [
     {
       id: 'warmup',
-      name: '新手適應',
       until: 30,
       spawnInterval: [4.5, 6],
       patienceDrain: 0.8,
@@ -32,7 +31,6 @@ export const GAME_CONFIG = {
     },
     {
       id: 'busy',
-      name: '開始忙碌',
       until: 60,
       spawnInterval: [3.2, 4.6],
       patienceDrain: 1,
@@ -42,7 +40,6 @@ export const GAME_CONFIG = {
     },
     {
       id: 'rush',
-      name: '咖啡廳大混亂',
       until: 90,
       spawnInterval: [2.3, 3.4],
       patienceDrain: 1.3,
@@ -89,11 +86,11 @@ export const GAME_CONFIG = {
   speechDuration: 2.2,
 };
 
-/** 結算稱號，min 由小到大 */
+/** 結算稱號，min 由小到大（顯示文字在 i18n 的 titles.<id>） */
 export const TITLES = [
-  { min: 0, name: '咖啡廳見習生' },
-  { min: 500, name: '貓咪服務員' },
-  { min: 1200, name: '人氣咖啡師' },
-  { min: 2000, name: '貓咪店長' },
-  { min: 3000, name: '傳說中的貓奴店長' },
+  { min: 0, id: 'trainee' },
+  { min: 500, id: 'server' },
+  { min: 1200, id: 'barista' },
+  { min: 2000, id: 'manager' },
+  { min: 3000, id: 'legend' },
 ];

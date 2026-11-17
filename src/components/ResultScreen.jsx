@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import CatCharacter from './CatCharacter.jsx';
 import { Sparkle, UiIcon } from './art/SceneArt.jsx';
+import { useI18n } from '../i18n/index.js';
 
 function useCountUp(target, duration = 1100) {
   const [value, setValue] = useState(0);
@@ -31,6 +32,7 @@ const CONFETTI = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 export default function ResultScreen({ result, onRestart, onHome }) {
+  const { t } = useI18n();
   const score = useCountUp(result.score);
   const mood = result.score >= 1200 ? 'happy' : result.score >= 500 ? 'waiting' : 'impatient';
 
@@ -44,33 +46,33 @@ export default function ResultScreen({ result, onRestart, onHome }) {
 
       <div className="result-hero">
         <CatCharacter catId="orange" mood={mood} className="result-cat" />
-        <p className="result-caption">本日營業結束！</p>
+        <p className="result-caption">{t('result.caption')}</p>
       </div>
 
       <div className="result-card">
-        <p className="result-label">最終分數</p>
+        <p className="result-label">{t('result.finalScore')}</p>
         <p className="result-score">{score}</p>
-        {result.isNewRecord && result.score > 0 && <p className="new-record">新紀錄！</p>}
+        {result.isNewRecord && result.score > 0 && <p className="new-record">{t('result.newRecord')}</p>}
         <p className="result-title">
-          <span>稱號</span>
-          <strong>{result.title}</strong>
+          <span>{t('result.title')}</span>
+          <strong>{t(`titles.${result.title}`)}</strong>
         </p>
 
         <dl className="result-stats">
           <div>
-            <dt>完成訂單</dt>
+            <dt>{t('result.served')}</dt>
             <dd>{result.served}</dd>
           </div>
           <div>
-            <dt>失敗訂單</dt>
+            <dt>{t('result.failed')}</dt>
             <dd>{result.failed}</dd>
           </div>
           <div>
-            <dt>最高 Combo</dt>
+            <dt>{t('result.maxCombo')}</dt>
             <dd>{result.maxCombo}</dd>
           </div>
           <div>
-            <dt>歷史最高分</dt>
+            <dt>{t('result.best')}</dt>
             <dd>{result.highScore}</dd>
           </div>
         </dl>
@@ -78,11 +80,11 @@ export default function ResultScreen({ result, onRestart, onHome }) {
 
       <div className="result-actions">
         <button type="button" className="btn btn-primary" onClick={onRestart} autoFocus>
-          再玩一次
+          {t('result.again')}
         </button>
         <button type="button" className="btn btn-ghost" onClick={onHome}>
           <UiIcon name="paw" />
-          回到首頁
+          {t('result.home')}
         </button>
       </div>
     </div>

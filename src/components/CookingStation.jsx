@@ -4,7 +4,7 @@ import IngredientIcon from './art/IngredientIcon.jsx';
 import DishIcon from './art/DishIcon.jsx';
 import { MilkSpillArt } from './art/SceneArt.jsx';
 import { INGREDIENTS, INGREDIENT_ORDER, RECIPES } from '../data/recipes.js';
-import { CATS } from '../data/cats.js';
+import { useI18n } from '../i18n/index.js';
 
 /** 餐點製作區 */
 export default function CookingStation({
@@ -18,13 +18,14 @@ export default function CookingStation({
   onServe,
   onClean,
 }) {
+  const { t } = useI18n();
   const recipe = order ? RECIPES[order.recipeId] : null;
-  const cat = order ? CATS[order.catId] : null;
+  const catName = order ? t(`cats.${order.catId}.name`) : '';
   const ready = !!recipe && order.progress >= recipe.steps.length;
   const blocked = !playing || !!spill;
 
   return (
-    <section className={`station ${spill ? 'is-spilled' : ''}`} aria-label="餐點製作區">
+    <section className={`station ${spill ? 'is-spilled' : ''}`} aria-label={t('station.aria')}>
       <div className="station-head">
         {recipe ? (
           <>
@@ -32,10 +33,10 @@ export default function CookingStation({
               <DishIcon id={recipe.id} />
             </span>
             <span className="station-title">
-              <small>{ready ? '完成！端給' : '製作中・給'} {cat.name}</small>
-              <strong>{recipe.name}</strong>
+              <small>{t(ready ? 'station.readyFor' : 'station.makingFor', { name: catName })}</small>
+              <strong>{t(`recipes.${recipe.id}`)}</strong>
             </span>
-            <ol className="step-track" aria-label="製作步驟">
+            <ol className="step-track" aria-label={t('station.stepsAria')}>
               {recipe.steps.map((step, i) => {
                 const state = i < order.progress ? 'done' : i === order.progress ? 'next' : 'todo';
                 return (
@@ -44,10 +45,10 @@ export default function CookingStation({
                     <li
                       className={`step-chip is-${state}`}
                       key={state === 'done' ? `done-${i}` : `s-${i}`}
-                      aria-label={`${i + 1}. ${INGREDIENTS[step].name}${state === 'done' ? '（完成）' : ''}`}
+                      aria-label={`${i + 1}. ${t(`ingredients.${step}`)}${state === 'done' ? t('station.stepDone') : ''}`}
                     >
                       <IngredientIcon id={step} />
-                      <span>{INGREDIENTS[step].name}</span>
+                      <span>{t(`ingredients.${step}`)}</span>
                     </li>
                   </Fragment>
                 );
@@ -55,14 +56,14 @@ export default function CookingStation({
             </ol>
           </>
         ) : (
-          <span className="station-empty">點選上方的貓咪訂單開始製作</span>
+          <span className="station-empty">{t('station.empty')}</span>
         )}
       </div>
 
       <div className="station-message-row" aria-live="polite">
         {message && (
           <span className={`station-message msg-${message.kind}`} key={message.id}>
-            {message.text}
+            {t(`messages.${message.key}`)}
           </span>
         )}
       </div>
@@ -86,16 +87,20 @@ export default function CookingStation({
         onClick={onServe}
         disabled={!ready || blocked}
       >
-        {ready ? '完成餐點！出餐' : recipe ? `依序加入食材（${order.progress}/${recipe.steps.length}）` : '尚未選擇訂單'}
+        {ready
+          ? t('station.serveReady')
+          : recipe
+            ? t('station.serveProgress', { n: order.progress, total: recipe.steps.length })
+            : t('station.serveNone')}
       </button>
 
       {spill && (
-        <div className="spill-overlay" role="alertdialog" aria-label="牛奶打翻了">
+        <div className="spill-overlay" role="alertdialog" aria-label={t('station.spillAria')}>
           <MilkSpillArt />
-          <p className="spill-title">喵嗚～牛奶打翻了！</p>
-          <p className="spill-text">擦乾淨之前不能做餐點</p>
+          <p className="spill-title">{t('station.spillTitle')}</p>
+          <p className="spill-text">{t('station.spillText')}</p>
           <button type="button" className="clean-btn" onClick={onClean} key={spill.cleaned}>
-            擦乾淨！
+            {t('station.clean')}
             <span className="clean-dots" aria-label={`${spill.cleaned}/${spill.required}`}>
               {Array.from({ length: spill.required }, (_, i) => (
                 <span key={i} className={i < spill.cleaned ? 'is-on' : ''} />

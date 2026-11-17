@@ -6,6 +6,8 @@ import CatCharacter from './CatCharacter.jsx';
 import PlayerBadge from './PlayerBadge.jsx';
 import { EventBanner, EventBar } from './EventNotification.jsx';
 import { UiIcon } from './art/SceneArt.jsx';
+import LanguageSwitcher from './LanguageSwitcher.jsx';
+import { useI18n } from '../i18n/index.js';
 import { useGameEngine } from '../hooks/useGameEngine.js';
 import { GAME_CONFIG } from '../utils/gameConfig.js';
 import { getResult, isLuckyActive } from '../utils/gameLogic.js';
@@ -25,6 +27,7 @@ const EFFECT_SOUNDS = {
 };
 
 export default function GameScreen({ audio, soundOn, onToggleSound, onFinish, onQuit }) {
+  const { t } = useI18n();
   const [burst, setBurst] = useState(null);
   const [shake, setShake] = useState(null);
   const finishTimer = useRef(0);
@@ -127,36 +130,37 @@ export default function GameScreen({ audio, soundOn, onToggleSound, onFinish, on
           <span className="ready-count" key={Math.ceil(state.readyLeft)}>
             {Math.ceil(state.readyLeft)}
           </span>
-          <span className="ready-text">開店準備中…</span>
+          <span className="ready-text">{t('game.preparing')}</span>
         </div>
       )}
 
       {state.status === 'paused' && (
-        <div className="overlay overlay-pause" role="dialog" aria-modal="true" aria-label="遊戲暫停">
+        <div className="overlay overlay-pause" role="dialog" aria-modal="true" aria-label={t('game.pauseAria')}>
           <div className="pause-card">
             <PlayerBadge className="pause-player" />
             <CatCharacter catId="white" mood="happy" className="pause-cat" />
-            <h2>休息一下喵～</h2>
-            <p>遊戲已暫停，準備好再繼續營業吧！</p>
+            <h2>{t('game.pauseTitle')}</h2>
+            <p>{t('game.pauseText')}</p>
             <button type="button" className="btn btn-primary" onClick={unlockAnd(resume)} autoFocus>
-              繼續營業
+              {t('game.resume')}
             </button>
             <div className="pause-actions">
               <button type="button" className="btn btn-ghost" onClick={onToggleSound}>
                 <UiIcon name={soundOn ? 'sound-on' : 'sound-off'} />
-                音效：{soundOn ? '開' : '關'}
+                {t('game.sound', { state: t(soundOn ? 'game.on' : 'game.off') })}
               </button>
               <button type="button" className="btn btn-ghost" onClick={onQuit}>
-                回到首頁
+                {t('game.home')}
               </button>
             </div>
+            <LanguageSwitcher className="pause-lang" />
           </div>
         </div>
       )}
 
       {state.status === 'over' && (
         <div className="overlay overlay-over" aria-live="assertive">
-          <span className="closing-sign">本日打烊囉！</span>
+          <span className="closing-sign">{t('game.closed')}</span>
         </div>
       )}
     </div>

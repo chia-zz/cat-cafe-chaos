@@ -1,5 +1,6 @@
 const HIGH_SCORE_KEY = 'catCafeChaos.highScore';
 const SOUND_KEY = 'catCafeChaos.sound';
+const LANGUAGE_KEY = 'catCafeChaos.lang';
 
 function getStore(store) {
   try {
@@ -51,4 +52,22 @@ export function saveSoundEnabled(enabled, store) {
   }
 }
 
-export const STORAGE_KEYS = { HIGH_SCORE_KEY, SOUND_KEY };
+export function loadLanguage(store) {
+  const s = getStore(store);
+  try {
+    return s?.getItem(LANGUAGE_KEY) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveLanguage(lang, store) {
+  const s = getStore(store);
+  try {
+    s?.setItem(LANGUAGE_KEY, lang);
+  } catch {
+    /* ignore */
+  }
+}
+
+export const STORAGE_KEYS = { HIGH_SCORE_KEY, SOUND_KEY, LANGUAGE_KEY };

@@ -2,17 +2,10 @@ import { memo } from 'react';
 import CatCharacter from './CatCharacter.jsx';
 import DishIcon from './art/DishIcon.jsx';
 import IngredientIcon from './art/IngredientIcon.jsx';
-import { CATS } from '../data/cats.js';
-import { INGREDIENTS, RECIPES } from '../data/recipes.js';
+import { RECIPES } from '../data/recipes.js';
+import { speechText, useI18n } from '../i18n/index.js';
 import { GAME_CONFIG } from '../utils/gameConfig.js';
 import { getMood } from '../utils/gameLogic.js';
-
-const MOOD_LABEL = {
-  happy: '開心期待',
-  waiting: '普通等待',
-  impatient: '不耐煩',
-  angry: '生氣',
-};
 
 function patienceLevel(p) {
   if (p > GAME_CONFIG.mood.happyAbove) return 'high';
@@ -21,7 +14,10 @@ function patienceLevel(p) {
 }
 
 function OrderCard({ order, selected, lucky, elapsed, onSelect }) {
-  const cat = CATS[order.catId];
+  const { t } = useI18n();
+  const catName = t(`cats.${order.catId}.name`);
+  const catTitle = t(`cats.${order.catId}.title`);
+  const recipeName = t(`recipes.${order.recipeId}`);
   const recipe = RECIPES[order.recipeId];
   const mood = getMood(order.patience, order.status);
   const leaving = order.status !== 'waiting';
@@ -47,30 +43,36 @@ function OrderCard({ order, selected, lucky, elapsed, onSelect }) {
       onClick={() => onSelect(order.id)}
       disabled={leaving}
       aria-pressed={selected}
-      aria-label={`${cat.name}${cat.title}點了${recipe.name}，耐心 ${Math.ceil(order.patience)}%，${MOOD_LABEL[mood]}`}
+      aria-label={t('orders.aria', {
+        name: catName,
+        title: catTitle,
+        recipe: recipeName,
+        p: Math.ceil(order.patience),
+        mood: t(`orders.moods.${mood}`),
+      })}
     >
       {order.speech && (
         <span className="speech" key={order.speech.id}>
-          {order.speech.text}
+          {speechText(t, order.speech)}
         </span>
       )}
-      {justChanged && <span className="changed-stamp">改單！</span>}
+      {justChanged && <span className="changed-stamp">{t('orders.changed')}</span>}
 
       <span className="order-cat">
         <CatCharacter catId={order.catId} mood={mood} />
       </span>
 
-      <span className="order-ticket">
+      <span className="order-ticket" data-making={t('orders.making')}>
         <span className="order-name">
           <DishIcon id={recipe.id} className="order-dish" />
-          <span className="order-dish-name">{recipe.name}</span>
+          <span className="order-dish-name">{recipeName}</span>
         </span>
         <span className="order-steps" aria-hidden="true">
           {recipe.steps.map((step, i) => (
             <span
               key={`${recipe.id}-${i}`}
               className={`mini-step ${i < order.progress ? 'is-done' : ''}`}
-              title={INGREDIENTS[step].name}
+              title={t(`ingredients.${step}`)}
             >
               <IngredientIcon id={step} />
             </span>
@@ -81,9 +83,11 @@ function OrderCard({ order, selected, lucky, elapsed, onSelect }) {
         </span>
         <span className="order-meta">
           <span className="order-cat-name">
-            {cat.name}・{cat.title}
+            {t('orders.catLabel', { name: catName, title: catTitle })}
           </span>
-          <span className={`order-points ${lucky ? 'is-lucky' : ''}`}>{points}</span>
+          <span className={`order-points ${lucky ? 'is-lucky' : ''}`} data-unit={t('orders.pts')}>
+            {points}
+          </span>
         </span>
       </span>
     </button>

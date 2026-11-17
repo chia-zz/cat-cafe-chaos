@@ -1,5 +1,7 @@
 import { LuckyCatArt, MilkSpillArt, UiIcon } from './art/SceneArt.jsx';
 import { EVENTS } from '../data/events.js';
+import { GAME_CONFIG } from '../utils/gameConfig.js';
+import { bannerText, useI18n } from '../i18n/index.js';
 
 /**
  * 事件提示區：
@@ -7,6 +9,7 @@ import { EVENTS } from '../data/events.js';
  * - 事件剛發生時的大型提示（banner），時間由遊戲狀態控制，暫停時一起暫停
  */
 export function EventBar({ event, elapsed, rush }) {
+  const { t } = useI18n();
   let content = null;
   if (event?.type === 'luckyCat') {
     const left = Math.max(0, event.endsAt - elapsed);
@@ -14,7 +17,7 @@ export function EventBar({ event, elapsed, rush }) {
     content = (
       <div className="event-chip chip-lucky">
         <LuckyCatArt />
-        <span>招財貓加持中・分數 ×2</span>
+        <span>{t('eventBar.lucky', { x: GAME_CONFIG.scoring.luckyMultiplier })}</span>
         <strong>{left.toFixed(1)}s</strong>
         <span className="chip-timer" style={{ transform: `scaleX(${ratio})` }} />
       </div>
@@ -23,23 +26,21 @@ export function EventBar({ event, elapsed, rush }) {
     content = (
       <div className="event-chip chip-spill">
         <MilkSpillArt />
-        <span>
-          牛奶打翻了！快擦乾淨（{event.cleaned}/{event.required}）
-        </span>
+        <span>{t('eventBar.spill', { n: event.cleaned, total: event.required })}</span>
       </div>
     );
   } else if (rush) {
     content = (
       <div className="event-chip chip-rush">
         <UiIcon name="paw" />
-        <span>尖峰時段！貓咪更沒耐心了</span>
+        <span>{t('eventBar.rush')}</span>
       </div>
     );
   } else {
     content = (
       <div className="event-chip chip-calm">
         <UiIcon name="paw" />
-        <span>依照順序點食材，做好就出餐！</span>
+        <span>{t('eventBar.calm')}</span>
       </div>
     );
   }
@@ -51,13 +52,15 @@ export function EventBar({ event, elapsed, rush }) {
 }
 
 export function EventBanner({ banner }) {
+  const { t } = useI18n();
   if (!banner) return null;
+  const { title, text } = bannerText(t, banner);
   return (
     <div className={`event-banner banner-${banner.kind}`} key={banner.id} role="status">
       {banner.kind === 'lucky' && <LuckyCatArt className="banner-art" />}
       {banner.kind === 'spill' && <MilkSpillArt className="banner-art" />}
-      <strong>{banner.title}</strong>
-      <span>{banner.text}</span>
+      <strong>{title}</strong>
+      <span>{text}</span>
     </div>
   );
 }

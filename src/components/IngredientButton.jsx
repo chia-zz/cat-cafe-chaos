@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import IngredientIcon from './art/IngredientIcon.jsx';
 import { Sparkle } from './art/SceneArt.jsx';
+import { useI18n } from '../i18n/index.js';
 
 const SPARKS = [
   { x: -26, y: -30, d: 0 },
@@ -15,6 +16,8 @@ const SPARKS = [
  * burstKey 改變時播放星星特效；shakeKey 改變時播放錯誤抖動。
  */
 function IngredientButton({ ingredient, onPick, disabled, burstKey, shakeKey }) {
+  const { t } = useI18n();
+  const name = t(`ingredients.${ingredient.id}`);
   return (
     <button
       type="button"
@@ -22,10 +25,10 @@ function IngredientButton({ ingredient, onPick, disabled, burstKey, shakeKey }) 
       key={shakeKey ? `shake-${shakeKey}` : undefined}
       onClick={() => onPick(ingredient.id)}
       disabled={disabled}
-      aria-label={`加入${ingredient.name}`}
+      aria-label={t('station.addIngredient', { name })}
     >
       <IngredientIcon id={ingredient.id} />
-      <span className="ingredient-name">{ingredient.name}</span>
+      <span className="ingredient-name">{name}</span>
       {burstKey ? (
         <span className="spark-burst" key={burstKey} aria-hidden="true">
           {SPARKS.map((p, i) => (

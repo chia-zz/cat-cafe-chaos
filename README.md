@@ -47,6 +47,15 @@ npm run preview    # 預覽建置結果
 
 **稱號**：0 咖啡廳見習生 / 500 貓咪服務員 / 1200 人氣咖啡師 / 2000 貓咪店長 / 3000 傳說中的貓奴店長。
 
+## 多語系
+
+支援 **繁體中文、English、ภาษาไทย**，開始畫面底部與暫停選單都可以切換，遊戲中切換會立即生效，選擇會記在 localStorage。
+
+- 初始語言：網址 `?lang=en|th|zh-TW` → 上次的選擇 → 瀏覽器語言 → 繁中
+- 語言包在 `src/i18n/locales/`；遊戲狀態只存文字 key，畫面渲染時才翻譯
+- 新增語言：複製 `zh-TW.js` 翻譯後加到 `src/i18n/index.js` 的 `LANGUAGES`；`tests/i18n.test.js` 會檢查 key 是否齊全
+- 泰文字型使用 Google Fonts 的 Mali
+
 ## 專案結構
 
 ```

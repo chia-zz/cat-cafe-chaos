@@ -112,7 +112,7 @@ describe('食譜判定', () => {
     expect(s1.score).toBe(190);
     expect(s1.orders.find((o) => o.id === 1).progress).toBe(0);
     expect(s1.orders.find((o) => o.id === 2).progress).toBe(1);
-    expect(s1.message.text).toBe('喵？！放錯材料了！');
+    expect(s1.message.key).toBe('wrong');
     expect(s1.mistakes).toBe(1);
   });
 
@@ -185,12 +185,12 @@ describe('計分', () => {
   });
 
   it('稱號門檻', () => {
-    expect(getTitle(0)).toBe('咖啡廳見習生');
-    expect(getTitle(499)).toBe('咖啡廳見習生');
-    expect(getTitle(500)).toBe('貓咪服務員');
-    expect(getTitle(1200)).toBe('人氣咖啡師');
-    expect(getTitle(2999)).toBe('貓咪店長');
-    expect(getTitle(3000)).toBe('傳說中的貓奴店長');
+    expect(getTitle(0)).toBe('trainee');
+    expect(getTitle(499)).toBe('trainee');
+    expect(getTitle(500)).toBe('server');
+    expect(getTitle(1200)).toBe('barista');
+    expect(getTitle(2999)).toBe('manager');
+    expect(getTitle(3000)).toBe('legend');
   });
 });
 

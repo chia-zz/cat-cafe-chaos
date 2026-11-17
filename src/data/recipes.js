@@ -1,14 +1,14 @@
-/** 食材清單 */
+/** 食材清單（名稱在 src/i18n/locales/*.js 的 ingredients / recipes） */
 export const INGREDIENTS = {
-  coffee: { id: 'coffee', name: '咖啡' },
-  hotWater: { id: 'hotWater', name: '熱水' },
-  milk: { id: 'milk', name: '牛奶' },
-  batter: { id: 'batter', name: '麵糊' },
-  bake: { id: 'bake', name: '烘烤' },
-  honey: { id: 'honey', name: '蜂蜜' },
-  cake: { id: 'cake', name: '蛋糕' },
-  cream: { id: 'cream', name: '鮮奶油' },
-  strawberry: { id: 'strawberry', name: '草莓' },
+  coffee: { id: 'coffee' },
+  hotWater: { id: 'hotWater' },
+  milk: { id: 'milk' },
+  batter: { id: 'batter' },
+  bake: { id: 'bake' },
+  honey: { id: 'honey' },
+  cake: { id: 'cake' },
+  cream: { id: 'cream' },
+  strawberry: { id: 'strawberry' },
 };
 
 /** 食材按鈕在 3×3 格子中的排列順序 */
@@ -28,7 +28,6 @@ export const INGREDIENT_ORDER = [
 export const RECIPES = {
   americano: {
     id: 'americano',
-    name: '美式咖啡',
     steps: ['coffee', 'hotWater'],
     score: 100,
     category: 'coffee',
@@ -36,7 +35,6 @@ export const RECIPES = {
   },
   latte: {
     id: 'latte',
-    name: '拿鐵',
     steps: ['coffee', 'milk'],
     score: 120,
     category: 'coffee',
@@ -44,7 +42,6 @@ export const RECIPES = {
   },
   strawberryMilk: {
     id: 'strawberryMilk',
-    name: '草莓牛奶',
     steps: ['milk', 'strawberry'],
     score: 120,
     category: 'drink',
@@ -52,7 +49,6 @@ export const RECIPES = {
   },
   pawPancake: {
     id: 'pawPancake',
-    name: '貓掌鬆餅',
     steps: ['batter', 'bake', 'honey'],
     score: 180,
     category: 'dessert',
@@ -60,7 +56,6 @@ export const RECIPES = {
   },
   strawberryCake: {
     id: 'strawberryCake',
-    name: '草莓蛋糕',
     steps: ['cake', 'cream', 'strawberry'],
     score: 180,
     category: 'dessert',
